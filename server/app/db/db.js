@@ -17,9 +17,8 @@ async function initial() {
         if (count === 0) {
             await Promise.all([
                 new Role({ name: "user" }).save(),
-                new Role({ name: "admin" }).save()
             ]);
-            console.log("Added 'user' and 'admin' to roles collection");
+            console.log("Added 'user' to roles collection");
         }
     } catch (err) {
         console.error("Error during initialization", err);

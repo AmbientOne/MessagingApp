@@ -45,7 +45,6 @@ isAdmin = (req, res, next) => {
                 }
 
                 res.status(403).send({ message: "Require Admin Role!" });
-                return;
             }
         );
     });
@@ -54,6 +53,5 @@ isAdmin = (req, res, next) => {
 
 const authJwt = {
     verifyToken,
-    isAdmin
 };
 module.exports = authJwt;
