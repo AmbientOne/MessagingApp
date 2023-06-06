@@ -11,7 +11,7 @@ const required = value => {
     if (!value) {
         return (
             <div className="alert alert-danger" role="alert">
-                this field is required!
+                This field is required!
             </div>
         );
     }
@@ -54,48 +54,75 @@ class Login extends Component {
 
         this.form.validateAll();
 
-        if (this.checkBtn.context._erros.length === 0) {
-            AuthService.login(this.state.username, this.state.password).then( () => {
-                this.props.router.navigate("/profile");
-                window.location.reload();
-            },
-            error => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
+        if (this.checkBtn.context._errors.length === 0) {
+            AuthService.login(this.state.username, this.state.password).then(
+                () => {
+                    this.props.router.navigate("/profile");
+                    window.location.reload();
+                },
+                error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
 
-                this.setState({
-                    loading: false,
-                    message: resMessage
-                }); 
-            });
+                    this.setState({
+                        loading: false,
+                        message: resMessage
+                    });
+                }
+            );
         } else {
             this.setState({
                 loading: false
             });
         }
     }
-    
+
     render() {
         return (
             <div className="col-md-12">
                 <div className="card card-container">
-                    <img src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="profile-img" className="profile-img-card"/>
-                    <Form onSubmit={this.handleLogin} ref={c => {
-                        this.form=c;
-                    }}
+                    <Form
+                        onSubmit={this.handleLogin}
+                        ref={c => {
+                            this.form = c;
+                        }}
                     >
                         <div className="form-group">
                             <label htmlFor="username">Username</label>
-                            <Input type="password" className="form-control" name="password" value={this.state.password} onChange={this.onChangePassword} validations={[required]}/>
+                            <Input
+                                type="text"
+                                className="form-control"
+                                name="username"
+                                value={this.state.username}
+                                onChange={this.onChangeUsername}
+                                validations={[required]}
+                            />
                         </div>
 
                         <div className="form-group">
-                            <button className="btn btn-primary btn-block" disable={this.state.loading}>
-                                {this.state.loading && (<span className="spinner-border spinner-border-sm"></span>)}
+                            <label htmlFor="password">Password</label>
+                            <Input
+                                type="password"
+                                className="form-control"
+                                name="password"
+                                value={this.state.password}
+                                onChange={this.onChangePassword}
+                                validations={[required]}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <button
+                                className="btn btn-primary btn-block"
+                                disabled={this.state.loading}
+                            >
+                                {this.state.loading && (
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                )}
                                 <span>Login</span>
                             </button>
                         </div>
@@ -108,7 +135,7 @@ class Login extends Component {
                             </div>
                         )}
                         <CheckButton
-                            style={{ display: "none"}}
+                            style={{ display: "none" }}
                             ref={c => {
                                 this.checkBtn = c;
                             }}

@@ -91,7 +91,7 @@ export default class Register extends Component {
 
         this.form.validateAll();
         
-        if(this.checkBtn.context._error.length === 0) {
+        if(this.checkBtn.context._errors.length === 0) {
             AuthService.register(
                 this.state.username,
                 this.state.email,
@@ -119,12 +119,6 @@ export default class Register extends Component {
         return (
             <div className="col-md-12">
                 <div className="card card-container">
-                    <img
-                        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-                        alt="profile-img"
-                        className="profile-img-card"
-                    />
-
                     <Form
                         onSubmit={this.handleRegister}
                         ref={c => {
