@@ -84,13 +84,13 @@ class Login extends Component {
             <div className="col-md-12">
                 <div className="card card-container">
                     <img src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="profile-img" className="profile-img-card"/>
-                    <form onSubmit={this.handleLogin} ref={c => {
+                    <Form onSubmit={this.handleLogin} ref={c => {
                         this.form=c;
                     }}
                     >
                         <div className="form-group">
                             <label htmlFor="username">Username</label>
-                            <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.onChangePassword} validations={[required]}/>
+                            <Input type="password" className="form-control" name="password" value={this.state.password} onChange={this.onChangePassword} validations={[required]}/>
                         </div>
 
                         <div className="form-group">
@@ -113,7 +113,7 @@ class Login extends Component {
                                 this.checkBtn = c;
                             }}
                         />
-                    </form>
+                    </Form>
                 </div>
             </div>
         );
