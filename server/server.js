@@ -17,14 +17,15 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-// simple route
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Messaging application." });
-});
 
 // routes
 require('./app/routes/auth_routes')(app);
 require('./app/routes/user_routes')(app);
+
+const roomsRoutes = require('./app/routes/room_routes')
+
+
+app.use('/', roomsRoutes);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080; // Default port is 8080
@@ -44,3 +45,18 @@ connectToDatabase()
         console.error("Connection error", err);
         process.exit();
     });
+
+
+
+/* SERVER FOR SOCKET */
+const http = require('http');
+const server = http.createServer(app);
+
+
+/* Socket Stuff */
+const socket = require('./app/socket/socket_setup');
+
+const SocketManager = new socket(server);
+
+
+

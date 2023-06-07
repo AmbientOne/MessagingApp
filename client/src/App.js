@@ -10,6 +10,7 @@ import Register from "./components/register_component";
 import Home from "./components/home_component";
 import Profile from "./components/profile_component";
 import BoardUser from "./components/boarduser_component";
+import Rooms from "./components/rooms_component";
 
 class App extends Component {
   constructor(props) {
@@ -48,18 +49,22 @@ class App extends Component {
               Messaging App
             </Link>
             <div className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to={"/home"} className="nav-link">
-                  Home
-                </Link>
-              </li>
-
-              {currentUser && (
+              {!currentUser && (
                   <li className="nav-item">
-                    <Link to={"/user"} className="nav-link">
-                      User
+                    <Link to={"/home"} className="nav-link">
+                      Home
                     </Link>
                   </li>
+              )}
+
+              {currentUser && (
+                  <>
+                    <li className="nav-item">
+                      <Link to={"/rooms"} className="nav-link">
+                        Rooms
+                      </Link>
+                    </li>
+                  </>
               )}
             </div>
 
@@ -67,7 +72,7 @@ class App extends Component {
                 <div className="navbar-nav ml-auto">
                   <li className="nav-item">
                     <Link to={"/profile"} className="nav-link">
-                      {currentUser.username}
+                      User Profile: {currentUser.username}
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -76,6 +81,7 @@ class App extends Component {
                     </a>
                   </li>
                 </div>
+
             ) : (
                 <div className="navbar-nav ml-auto">
                   <li className="nav-item">
@@ -100,7 +106,7 @@ class App extends Component {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/user" element={<BoardUser />} />
+              <Route path="/rooms" element={<Rooms /> } />
             </Routes>
           </div>
         </div>

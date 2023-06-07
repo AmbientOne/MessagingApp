@@ -10,7 +10,6 @@ exports.signup = async (req, res) => {
     try {
         const { username, email, password, roles } = req.body;
 
-        // Create a new user
         const newUser = new User({
             username,
             email,
