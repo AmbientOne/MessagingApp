@@ -1,0 +1,9 @@
+.col-md-12 {
+    background-color: gainsboro;
+    max-width: 210px;
+    display:flex;
+    margin: auto;
+    margin-top: 20%;
+    margin-left: 29%;
+    position: absolute;
+}

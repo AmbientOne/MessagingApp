@@ -42,8 +42,8 @@ class App extends Component {
     const { currentUser } = this.state;
 
     return (
-        <div>
-          <nav className="navbar navbar-expand navbar-dark bg-dark">
+        <div className="wrapper">
+          {/*<nav className="navbar navbar-expand navbar-dark bg-dark">
             <Link to={"/"} className="navbar-brand">
               Messaging App
             </Link>
@@ -91,7 +91,41 @@ class App extends Component {
                   </li>
                 </div>
             )}
-          </nav>
+            </nav>*/}
+            <body>
+              <div className="mainBox">
+                <h4>Messenger App</h4>
+                {currentUser ? (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Link to={"/profile"} className="nav-link">
+                        {currentUser.username}
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <a href="/login" className="nav-link" onClick={this.logOut}>
+                        LogOut
+                      </a>
+                    </li>
+                  </div>
+                ) : (
+                  <div className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                      <Link to={"/login"} className="nav-link">
+                        Login
+                      </Link>
+                    </li>
+
+                    <li className="nav-item">
+                      <Link to={"/register"} className="nav-link">
+                        Sign Up
+                      </Link>
+                    </li>
+                  </div>
+                )}
+
+              </div>
+            </body>
 
           <div className="container mt-3">
             <Routes>
