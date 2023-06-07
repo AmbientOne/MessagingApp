@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
+import socketIO from 'socket.io-client';
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -9,9 +11,10 @@ import Login from "./components/login_component";
 import Register from "./components/register_component";
 import Home from "./components/home_component";
 import Profile from "./components/profile_component";
-import BoardUser from "./components/boarduser_component";
 import Rooms from "./components/rooms_component";
+import ChatPage from "./components/chat_component";
 
+const socket = socketIO.connect('http://localhost:4000');
 class App extends Component {
   constructor(props) {
     super(props);
@@ -49,14 +52,6 @@ class App extends Component {
               Messaging App
             </Link>
             <div className="navbar-nav mr-auto">
-              {!currentUser && (
-                  <li className="nav-item">
-                    <Link to={"/home"} className="nav-link">
-                      Home
-                    </Link>
-                  </li>
-              )}
-
               {currentUser && (
                   <>
                     <li className="nav-item">
@@ -107,6 +102,7 @@ class App extends Component {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/rooms" element={<Rooms /> } />
+              <Route path="/chat/:roomId" element={<ChatPage socket={socket} />} />
             </Routes>
           </div>
         </div>

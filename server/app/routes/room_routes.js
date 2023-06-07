@@ -83,10 +83,10 @@ router.post('/api/rooms/create', (req, res) => {
 
 
 router.post('/api/rooms/join', (req, res) => {
-    const { roomName, username} = req.body;
+    const { roomName, username } = req.body;
 
-    // Find the room by its ID
-    Room.findById(roomName)
+    // Find the room by its name
+    Room.findOne({ name: roomName })
         .then(room => {
             if (!room) {
                 // If the room is not found, return an error response to the frontend
@@ -101,10 +101,11 @@ router.post('/api/rooms/join', (req, res) => {
                         return res.status(404).json({ error: 'User not found' });
                     }
 
-                    //find out if the user is already in the room
-                    if (user.rooms.includes(roomName)) {
-                        return res.status(409).json( { error: 'User already in room' });
+                    // Check if the user is already in the room
+                    if (user.rooms.includes(room._id)) {
+                        return res.status(409).json({ error: 'User already in room' });
                     }
+
                     // Add the room's ID to the user's rooms array
                     user.rooms.push(room._id);
 
@@ -124,6 +125,7 @@ router.post('/api/rooms/join', (req, res) => {
             res.status(500).json({ error: 'Failed to join room' });
         });
 });
+
 
 router.delete('/api/rooms/leave', (req, res) => {
     const { roomName, username } = req.body;

@@ -57,6 +57,12 @@ class Login extends Component {
         if (this.checkBtn.context._errors.length === 0) {
             AuthService.login(this.state.username, this.state.password).then(
                 () => {
+                    const userData = {
+                        username: this.state.username,
+                        email: AuthService.getCurrentUser().email
+                    };
+                    //this.props.socket.emit('signIn', userData);
+
                     this.props.router.navigate("/profile");
                     window.location.reload();
                 },

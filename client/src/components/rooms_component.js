@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AuthService from "../services/auth_service";
-import { Navigate } from "react-router-dom";
-
+import { Navigate, useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:8080/api/rooms";
 
 const RoomList = ({ currentUser }) => {
     const [rooms, setRooms] = useState([]);
-    const [roomId, setRoomId] = useState("");
+    const [roomName, setRoomName] = useState("");
     const [newRoomName, setNewRoomName] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Fetch room data from the backend API
@@ -42,23 +42,22 @@ const RoomList = ({ currentUser }) => {
             });
     };
 
-    const handleJoinRoom = (roomId) => {
+    const handleJoinRoom = () => {
         // Make API request to join a room
         axios
-            .post(
-                API_URL + "/join",
-                { roomId, username: currentUser.username },
-                { transformRequest: [(data) => JSON.stringify(data)] }
-            )
+            .post(API_URL + "/join", {
+                roomId: roomName,
+                username: currentUser.username,
+            })
             .then((response) => {
                 // Handle successful join
                 console.log("Room joined successfully");
+                setRoomName(""); // Clear the room name input
             })
             .catch((error) => {
                 console.error("Error joining room:", error);
             });
     };
-
 
     const handleLeaveRoom = (roomId) => {
         // Make API request to leave a room
@@ -67,7 +66,7 @@ const RoomList = ({ currentUser }) => {
                 data: {
                     roomId,
                     username: currentUser.username,
-                }
+                },
             })
             .then((response) => {
                 // Handle successful leave
@@ -81,24 +80,28 @@ const RoomList = ({ currentUser }) => {
             });
     };
 
+    const handleEnterRoom = (roomName) => {
+        navigate(`/chat/${roomName}`); // Redirect to the chat page with the roomName in the URL
+    };
+
     return (
         <div className="room-list">
             <h2>Rooms:</h2>
-                        <div>
+            <div>
                 <input
                     type="text"
                     value={newRoomName}
                     onChange={(e) => setNewRoomName(e.target.value)}
                     placeholder="Enter new Room Name"
                 />
+                <button onClick={handleCreateRoom}>Create Room</button>
             </div>
-            <button onClick={handleCreateRoom}>Create Room</button>
             <div>
                 <input
                     type="text"
-                    value={roomId}
-                    onChange={(e) => setRoomId(e.target.value)}
-                    placeholder="Enter Room ID"
+                    value={roomName}
+                    onChange={(e) => setRoomName(e.target.value)}
+                    placeholder="Enter Room name"
                 />
                 <button onClick={handleJoinRoom}>Join Room</button>
             </div>
@@ -108,6 +111,9 @@ const RoomList = ({ currentUser }) => {
                         <h3>{room.name}</h3>
                         <button onClick={() => handleLeaveRoom(room._id)}>
                             Leave Room
+                        </button>
+                        <button onClick={() => handleEnterRoom(room.name)}>
+                            Enter Room
                         </button>
                     </div>
                 ))}
@@ -120,6 +126,7 @@ const Rooms = () => {
     const [redirect, setRedirect] = useState(null);
     const [userReady, setUserReady] = useState(false);
     const [currentUser, setCurrentUser] = useState({ username: "" });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const currentUser = AuthService.getCurrentUser();
@@ -139,7 +146,6 @@ const Rooms = () => {
     return (
         <div>
             {userReady && <RoomList currentUser={currentUser} />}
-            {/* Render other components or content here */}
         </div>
     );
 };
