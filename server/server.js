@@ -28,7 +28,8 @@ const io = socketIO(server, {
     cors: {
         origin: "http://localhost:3000",
         methods: ["GET", "POST"],
-    },
+        credentials: true,
+    }, transports: ['websocket']
 });
 const helperController = require('./app/controllers/helper_controller');
 
