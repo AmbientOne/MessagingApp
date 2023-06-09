@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-const ChatBody = ( { newMessages }) => {
+const ChatBody = ({ newMessages }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const currentUrl = location.pathname;
     const [roomId, setRoomId] = useState('');
     const [messages, setMessages] = useState([]);
     const [hasMounted, setHasMounted] = useState(false);
+    const chatContainerRef = useRef(null);
 
     useEffect(() => {
         const roomIdFromUrl = currentUrl.split('/').pop();
@@ -17,7 +18,11 @@ const ChatBody = ( { newMessages }) => {
         const fetchPreviousMessages = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/messages/${roomIdFromUrl}`);
-                const previousMessages = response.data;
+                const previousMessages = response.data.map((message) => ({
+                    id: message._id,
+                    text: message.text || message.message.text,
+                    username: message.username,
+                }));
                 setMessages(previousMessages);
                 setHasMounted(true); // Set hasMounted to true after loading previous messages
             } catch (error) {
@@ -25,10 +30,25 @@ const ChatBody = ( { newMessages }) => {
             }
         };
 
-        if (!hasMounted) {
-            fetchPreviousMessages(); // Fetch previous messages only if the component has not mounted
+        fetchPreviousMessages();
+    }, [currentUrl]);
+
+    useEffect(() => {
+        if (newMessages.length > 0) {
+            const latestMessage = newMessages[newMessages.length - 1];
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                {
+                    id: latestMessage.id,
+                    text: latestMessage.text,
+                    username: latestMessage.sender,
+                },
+            ]);
+
+            // Scroll to the bottom of the chat container
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [currentUrl, hasMounted]);
+    }, [newMessages]);
 
     const handleLeaveChat = () => {
         navigate('/');
@@ -42,23 +62,33 @@ const ChatBody = ( { newMessages }) => {
                     LEAVE CHAT
                 </button>
             </header>
-                <div className="message__container">
-                    {messages.map((message) => (
-                        <div className="message__chats" key={message._id}>
-                            <p className="sender__name">
-                                {message.username === localStorage.getItem('userName') ? 'You' : message.username}
+            <div className="message__container" ref={chatContainerRef}>
+                {messages.map((message, index) => (
+                    <div className="message__chats" key={`${message.id}-${index}`}>
+                        <p className="sender__name">
+                            {message.username === localStorage.getItem('user') ? 'You' : message.username}
+                        </p>
+                        <div
+                            className={
+                                message.username === JSON.parse(localStorage.getItem('user'))?.username
+                                    ? 'message__sender'
+                                    : 'message__recipient'
+                            }
+                        >
+                            <p
+                                style={
+                                    message.username === JSON.parse(localStorage.getItem('user'))?.username
+                                        ? { color: 'blue' }
+                                        : {}
+                                }
+                            >
+                                {message.text}
                             </p>
-                            <div className={message.username === localStorage.getItem('userName') ? 'message__sender' : 'message__recipient'}>
-                                <p style={message.username === localStorage.getItem('userName') ? { color: 'blue' } : {}}>
-                                    {message.message.text}
-                                </p>
-                            </div>
                         </div>
-                    ))}
-
-
-                <div className="message__status"></div>
+                    </div>
+                ))}
             </div>
+            <div className="message__status"></div>
         </>
     );
 };

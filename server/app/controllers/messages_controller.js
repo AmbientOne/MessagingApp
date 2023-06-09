@@ -7,9 +7,7 @@ const saveMessage = async (sender, text, room) => {
             username: sender,
             room,
         });
-        const savedMessage = await newMessage.save();
-        console.log(`Message saved: ${savedMessage}`);
-        return savedMessage;
+        return await newMessage.save();
     } catch (error) {
         console.error('Error saving message:', error);
         throw error;

@@ -7,12 +7,10 @@ const ChatFooter = ({ socket }) => {
 
     const currentUrl = location.pathname;
     const roomId = currentUrl.split('/').pop();
-    // Print the current URL
-    console.log('Current URL:', roomId);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        console.log(localStorage.getItem('user'));
+        //console.log("Printing user: " + localStorage.getItem('user'));
         if (message.trim() && localStorage.getItem('user')) {
             socket.emit('message', {
                 text: message,

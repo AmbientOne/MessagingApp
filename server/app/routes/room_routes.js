@@ -110,10 +110,10 @@ router.post('/api/rooms/join', (req, res) => {
                     user.rooms.push(room._id);
 
                     // Save the updated user
-                    return user.save();
-                })
-                .then(() => {
-                    res.status(200).json({ message: 'Room joined successfully' });
+                    return user.save()
+                        .then(() => {
+                            res.status(200).json({ message: 'Room joined successfully' });
+                        });
                 })
                 .catch(error => {
                     console.error('Error joining room:', error);
@@ -128,7 +128,7 @@ router.post('/api/rooms/join', (req, res) => {
 
 
 router.delete('/api/rooms/leave', (req, res) => {
-    const { roomName, username } = req.body;
+    const { roomId, username } = req.body;
 
     User.findOne({ username })
         .then(user => {
@@ -136,9 +136,8 @@ router.delete('/api/rooms/leave', (req, res) => {
                 throw new Error('User not found');
             }
 
-            const roomId = new mongoose.Types.ObjectId(roomName); // Convert roomName to ObjectId
-
-            user.rooms = user.rooms.filter(room => !room.equals(roomId)); // Use .equals() to compare ObjectId values
+            // Remove the room from the user's rooms array
+            user.rooms = user.rooms.filter(room => room.toString() !== roomId);
 
             return user.save();
         })
@@ -150,6 +149,9 @@ router.delete('/api/rooms/leave', (req, res) => {
             res.status(500).json({ error: 'Failed to leave room' });
         });
 });
+
+
+
 
 
 module.exports = router;

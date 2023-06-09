@@ -46,13 +46,16 @@ const RoomList = ({ currentUser }) => {
         // Make API request to join a room
         axios
             .post(API_URL + "/join", {
-                roomId: roomName,
+                roomName: roomName,
                 username: currentUser.username,
             })
             .then((response) => {
                 // Handle successful join
                 console.log("Room joined successfully");
                 setRoomName(""); // Clear the room name input
+                //setRooms((prevRooms) => [...prevRooms, response.data]); // Update the room list
+                window.location.reload();
+
             })
             .catch((error) => {
                 console.error("Error joining room:", error);
